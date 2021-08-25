@@ -26,6 +26,18 @@
     $current_post_id = get_the_ID();
     // Get the current post url and encode it
     $current_post_url = urlencode(get_the_permalink($current_post_id));
+    // get post type
+    $current_post_type = get_post_type($current_post_id);
+
+    /**
+     * Check post type
+     * and remove from specific post type
+     */
+    $excluded_post_types = apply_filters('pqrc_excluded_post_types', array());
+    if(in_array($current_post_type, $excluded_post_types)) {
+      return $content;
+    }
+
     // Generate the QR code
     $qr_img_src = sprintf('https://api.qrserver.com/v1/create-qr-code/?size=185x185&ecc=L&qzone=1&data=%s', $current_post_url);
     // Insert the QR code at the bottom of content

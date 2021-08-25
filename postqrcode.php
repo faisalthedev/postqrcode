@@ -38,8 +38,13 @@
       return $content;
     }
 
+    /**
+     * QR Code dimension
+     */
+    $dimension = apply_filters('pqrc_qrcode_diamention', '185x185');
+
     // Generate the QR code
-    $qr_img_src = sprintf('https://api.qrserver.com/v1/create-qr-code/?size=185x185&ecc=L&qzone=1&data=%s', $current_post_url);
+    $qr_img_src = sprintf('https://api.qrserver.com/v1/create-qr-code/?size=%s&ecc=L&qzone=1&data=%s', $dimension, $current_post_url);
     // Insert the QR code at the bottom of content
     $content .= sprintf('<div class="pqrc"><img src="%s" alt="Post QR code" /></div>', $qr_img_src);
 

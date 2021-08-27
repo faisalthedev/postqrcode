@@ -38,10 +38,12 @@
       return $content;
     }
 
-    /**
-     * QR Code dimension
-     */
-    $dimension = apply_filters('pqrc_qrcode_diamention', '185x185');
+    // QR Code dimension
+    $height = get_option('pqrc_height');
+    $width = get_option('pqrc_width');
+    $height = $height ? $height : '180';
+    $width = $width ? $width : '180';
+    $dimension = apply_filters('pqrc_qrcode_diamention', "{$height}x{$width}");
 
     // Generate the QR code
     $qr_img_src = sprintf('https://api.qrserver.com/v1/create-qr-code/?size=%s&ecc=L&qzone=1&data=%s', $dimension, $current_post_url);
@@ -51,3 +53,25 @@
     return $content;
   }
   add_filter('the_content', 'pqrc_display_qr_code');
+
+  // register settings fields
+  function pqrc_settings_init() {
+    add_settings_field('pqrc_height', __('QR Code Height', 'postqrcode'), 'pqrc_display_height', 'general');
+    add_settings_field('pqrc_width', __('QR Code Width', 'postqrcode'), 'pqrc_display_width', 'general');
+
+    register_setting('general', 'pqrc_height', array('sanitize_callback' => 'esc_attr'));
+    register_setting('general', 'pqrc_width', array('sanitize_callback' => 'esc_attr'));
+  }
+
+  // height input
+  function pqrc_display_height() {
+    $height = get_option('pqrc_height');
+    printf("<input type='number' id='%s' name='%s' value='%s' />", 'pqrc_height', 'pqrc_height', $height);
+  }
+
+  function pqrc_display_width() {
+    $width = get_option('pqrc_width');
+    printf("<input type='number' id='%s' name='%s' value='%s' />", 'pqrc_width', 'pqrc_width', $width);
+  }
+
+  add_action('admin_init', 'pqrc_settings_init');

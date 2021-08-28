@@ -64,12 +64,14 @@
     add_settings_field('pqrc_width', __('QR Code Width', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_width', 'px'));
     // add_settings_field('pqrc_extra', __('QR Code Extra', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_extra', 'optional'));
     add_settings_field('pqrc_select', __('Where are you located?', 'postqrcode'), 'pqrc_display_select_field', 'general', 'pqrc_section');
+    add_settings_field('pqrc_checkbox', __('Where you traveled?', 'postqrcode'), 'pqrc_display_checkbox_field', 'general', 'pqrc_section');
 
     // register options
     register_setting('general', 'pqrc_height', array('sanitize_callback' => 'esc_attr'));
     register_setting('general', 'pqrc_width', array('sanitize_callback' => 'esc_attr'));
     // register_setting('general', 'pqrc_extra', array('sanitize_callback' => 'esc_attr'));
     register_setting('general', 'pqrc_select', array('sanitize_callback' => 'esc_attr'));
+    register_setting('general', 'pqrc_checkbox');
   }
 
   // section callback
@@ -91,10 +93,26 @@
     printf("<select id='%s' name='%s'>", 'pqrc_select', 'pqrc_select');
     foreach($countries as $country) {
       $selected = '';
-      if($option == $country) $selected = 'selected';
+      if($option == $country) {
+        $selected = 'selected';
+      }
       printf("<option value='%s' %s>%s</option>", $country, $selected, $country);
     }
     echo "</select>";
+  }
+
+  function pqrc_display_checkbox_field() {
+    $option = get_option('pqrc_checkbox');
+    $countries = array('Afganistan', 'Bangladesh', 'India', 'Maldives', 'Nepaal', 'Pakistan', 'Sri Lanka');
+
+    foreach($countries as $country) {
+      $selected = '';
+
+      if( is_array($option) && in_array($country, $option) ) {
+        $selected = 'checked';
+      }
+      printf("<input type='checkbox' name='pqrc_checkbox[]' value='%s' %s /> %s <br>", $country, $selected, $country);
+    }
   }
 
   // height & width input

@@ -60,12 +60,14 @@
     add_settings_section('pqrc_section', __('Post to QR Code', 'postqrcode'), 'pqrc_section_callback', 'general');
 
     // option register
-    add_settings_field('pqrc_height', __('QR Code Height', 'postqrcode'), 'pqrc_display_height', 'general', 'pqrc_section');
-    add_settings_field('pqrc_width', __('QR Code Width', 'postqrcode'), 'pqrc_display_width', 'general', 'pqrc_section');
+    add_settings_field('pqrc_height', __('QR Code Height', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_height', 'px'));
+    add_settings_field('pqrc_width', __('QR Code Width', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_width', 'px'));
+    add_settings_field('pqrc_extra', __('QR Code Extra', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_extra', 'optional'));
 
     // register options
     register_setting('general', 'pqrc_height', array('sanitize_callback' => 'esc_attr'));
     register_setting('general', 'pqrc_width', array('sanitize_callback' => 'esc_attr'));
+    register_setting('general', 'pqrc_extra', array('sanitize_callback' => 'esc_attr'));
   }
 
   // section callback
@@ -73,15 +75,21 @@
     echo "<p>". __('Settings for Post to QR plugin','postqrcode') ."</p>";
   }
 
-  // height & width input
-  function pqrc_display_height() {
-    $height = get_option('pqrc_height');
-    printf("<input type='number' id='%s' name='%s' value='%s' />", 'pqrc_height', 'pqrc_height', $height);
+  // Input section
+  function pqrc_display_field($args) {
+    $option = get_option($args[0]);
+    printf("<input type='text' id='%s' name='%s' value='%s' placeholder='%s' />", $args[0], $args[0], $option, $args[1]);
   }
 
-  function pqrc_display_width() {
-    $width = get_option('pqrc_width');
-    printf("<input type='number' id='%s' name='%s' value='%s' />", 'pqrc_width', 'pqrc_width', $width);
-  }
+  // height & width input
+  // function pqrc_display_height() {
+  //   $height = get_option('pqrc_height');
+  //   printf("<input type='number' id='%s' name='%s' value='%s' />", 'pqrc_height', 'pqrc_height', $height);
+  // }
+
+  // function pqrc_display_width() {
+  //   $width = get_option('pqrc_width');
+  //   printf("<input type='number' id='%s' name='%s' value='%s' />", 'pqrc_width', 'pqrc_width', $width);
+  // }
 
   add_action('admin_init', 'pqrc_settings_init');

@@ -14,6 +14,25 @@
    * Domain Path:       /languages
    */
 
+  //  Init function
+  function pqrc_init() {
+    global $pqrc_countries;
+    $pqrc_countries = apply_filters('pqrc_countries', $pqrc_countries);
+  }
+  add_action('init', 'pqrc_init');
+
+  //  Countries list
+  $pqrc_countries = array(
+    __('Afganistan', 'postqrcode'),
+    __('Bangladesh', 'postqrcode'),
+    __('Bhutan', 'postqrcode'),
+    __('India', 'postqrcode'),
+    __('Maldives', 'postqrcode'),
+    __('Nepaal', 'postqrcode'),
+    __('Pakistan', 'postqrcode'),
+    __('Sri Lanka', 'postqrcode')
+  );
+
    // load plugin text domain
    function postqrcode_textdomain_load() {
       load_muplugin_textdomain( 'postqrcode', false, dirname(__FILE__).'/languages' );
@@ -87,11 +106,11 @@
 
   // select dropdown field
   function pqrc_display_select_field() {
+    global $pqrc_countries;
     $option = get_option('pqrc_select');
-    $countries = array('None', 'Afganistan', 'Bangladesh', 'India', 'Maldives', 'Nepaal', 'Pakistan', 'Sri Lanka');
 
     printf("<select id='%s' name='%s'>", 'pqrc_select', 'pqrc_select');
-    foreach($countries as $country) {
+    foreach($pqrc_countries as $country) {
       $selected = '';
       if($option == $country) {
         $selected = 'selected';
@@ -102,10 +121,10 @@
   }
 
   function pqrc_display_checkbox_field() {
+    global $pqrc_countries;
     $option = get_option('pqrc_checkbox');
-    $countries = array('Afganistan', 'Bangladesh', 'India', 'Maldives', 'Nepaal', 'Pakistan', 'Sri Lanka');
 
-    foreach($countries as $country) {
+    foreach($pqrc_countries as $country) {
       $selected = '';
 
       if( is_array($option) && in_array($country, $option) ) {

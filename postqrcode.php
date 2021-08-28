@@ -62,12 +62,14 @@
     // option register
     add_settings_field('pqrc_height', __('QR Code Height', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_height', 'px'));
     add_settings_field('pqrc_width', __('QR Code Width', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_width', 'px'));
-    add_settings_field('pqrc_extra', __('QR Code Extra', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_extra', 'optional'));
+    // add_settings_field('pqrc_extra', __('QR Code Extra', 'postqrcode'), 'pqrc_display_field', 'general', 'pqrc_section', array('pqrc_extra', 'optional'));
+    add_settings_field('pqrc_select', __('Where are you located?', 'postqrcode'), 'pqrc_display_select_field', 'general', 'pqrc_section');
 
     // register options
     register_setting('general', 'pqrc_height', array('sanitize_callback' => 'esc_attr'));
     register_setting('general', 'pqrc_width', array('sanitize_callback' => 'esc_attr'));
-    register_setting('general', 'pqrc_extra', array('sanitize_callback' => 'esc_attr'));
+    // register_setting('general', 'pqrc_extra', array('sanitize_callback' => 'esc_attr'));
+    register_setting('general', 'pqrc_select', array('sanitize_callback' => 'esc_attr'));
   }
 
   // section callback
@@ -75,10 +77,24 @@
     echo "<p>". __('Settings for Post to QR plugin','postqrcode') ."</p>";
   }
 
-  // Input section
+  // Input field
   function pqrc_display_field($args) {
     $option = get_option($args[0]);
     printf("<input type='text' id='%s' name='%s' value='%s' placeholder='%s' />", $args[0], $args[0], $option, $args[1]);
+  }
+
+  // select dropdown field
+  function pqrc_display_select_field() {
+    $option = get_option('pqrc_select');
+    $countries = array('None', 'Afganistan', 'Bangladesh', 'India', 'Maldives', 'Nepaal', 'Pakistan', 'Sri Lanka');
+
+    printf("<select id='%s' name='%s'>", 'pqrc_select', 'pqrc_select');
+    foreach($countries as $country) {
+      $selected = '';
+      if($option == $country) $selected = 'selected';
+      printf("<option value='%s' %s>%s</option>", $country, $selected, $country);
+    }
+    echo "</select>";
   }
 
   // height & width input
